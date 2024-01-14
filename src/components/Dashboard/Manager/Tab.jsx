@@ -4,6 +4,8 @@ import io from "socket.io-client";
 import { AuthContext } from "../../context/AuthProvider";
 import MessageAdmin from "./MessageAdmin";
 import { useNavigate } from "react-router-dom";
+import Recharge from "../../Recharge/Recharge";
+import WalletAdmin from "../../WalletAdmin/WalletAdmin";
 const Tabs = () => {
   const [activeTab, setActiveTab] = useState("London");
   const [tickets, setTickets] = useState([]);
@@ -18,11 +20,11 @@ const Tabs = () => {
     const fetchMessagesFromDatabase = async () => {
       try {
         const response = await fetch(
-          "https://nirapode-server.vercel.app/message"
+          "https://e-wallet-server.vercel.app/message"
         );
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
+          // console.log(data);
           setMessages(data);
         }
       } catch (error) {
@@ -37,7 +39,7 @@ const Tabs = () => {
 
   useEffect(() => {
     // Fetch data from the URL
-    fetch("https://nirapode-server.vercel.app/trips")
+    fetch("https://e-wallet-server.vercel.app/trips")
       .then((response) => response.json())
       .then((data) => {
         // Update the state with the fetched data
@@ -53,7 +55,7 @@ const Tabs = () => {
   };
   useEffect(() => {
     // Fetch data from the URL
-    fetch("https://nirapode-server.vercel.app/ticket")
+    fetch("https://e-wallet-server.vercel.app/ticket")
       .then((response) => response.json())
       .then((data) => {
         // Update the state with the fetched data
@@ -116,6 +118,14 @@ const Tabs = () => {
           Message
         </button>
         <button
+          className={`py-2 px-4 bg-gray-300 hover:bg-gray-400 ${
+            activeTab === "recharge" ? "bg-gray-400" : ""
+          }`}
+          onClick={() => openTab("recharge")}
+        >
+          E-Wallet
+        </button>
+        <button
           onClick={refreshPage}
           className=" ml-2 px-4 bg-[#05A83F] text-white uppercase py-2 rounded-lg my-3"
         >
@@ -168,6 +178,18 @@ const Tabs = () => {
             </table>
           </div>
         </div>
+        {/* this part is for recharge */}
+
+        <div
+          id="recharge"
+          className={`${
+            activeTab === "recharge" ? "block" : "hidden"
+          } bg-white border p-4 rounded-lg`}
+        >
+          <WalletAdmin></WalletAdmin>
+        </div>
+
+        {/* this part is for message */}
 
         <div
           id="message"

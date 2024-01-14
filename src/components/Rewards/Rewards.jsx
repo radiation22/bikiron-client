@@ -6,11 +6,12 @@ import { FaAngleRight } from "react-icons/fa";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Rewards = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   // Define the query key
   const queryKey = ["tickets", user?.email];
@@ -19,7 +20,7 @@ const Rewards = () => {
   const { data: tickets = [], refetch } = useQuery(
     queryKey,
     async () => {
-      const url = `https://nirapode-server.vercel.app/myTicket?email=${user?.email}`;
+      const url = `https://e-wallet-server.vercel.app/myTicket?email=${user?.email}`;
       const res = await fetch(url);
       const data = await res.json();
       const count = data?.filter((tik) => tik?.status == "checked");
@@ -40,15 +41,15 @@ const Rewards = () => {
   const progressBarWidth = `${progressPercentage}%`;
 
   // Define whether each reward is enabled based on points
-  const isCashBackEnabled = points >= 60; //10 ticket
-  const isFreeRideEnabled = points >= 260; // 20 ticket
-  const isFreeRingEnabled = points >= 660; //40 ticket
-  const isFreeGlassEnabled = points >= 1360; //70 ticket
-  const isFreeCapEnabled = points >= 2360; //100 ticket
-  const isFreeTwoRideEnabled = points >= 3860; //150 ticket
-  const isFreeShirtEnabled = points >= 5860; //200 ticket
-  const isFreeWatchEnabled = points >= 8360; //250 ticket
-  const isFreeMugEnabled = points >= 11360; //300 ticket
+  const isCashBackEnabled = points >= 110; //10 ticket
+  const isFreeRideEnabled = points >= 310; // 20 ticket
+  const isFreeRingEnabled = points >= 710; //40 ticket
+  const isFreeGlassEnabled = points >= 1410; //70 ticket
+  const isFreeCapEnabled = points >= 2410; //100 ticket
+  const isFreeTwoRideEnabled = points >= 3910; //150 ticket
+  const isFreeShirtEnabled = points >= 5910; //200 ticket
+  const isFreeWatchEnabled = points >= 8410; //250 ticket
+  const isFreeMugEnabled = points >= 11410; //300 ticket
 
   const claims = {
     status: "Pending",
@@ -56,7 +57,7 @@ const Rewards = () => {
   };
 
   const handleCollectButtonClick = () => {
-    fetch("https://nirapode-server.vercel.app/addClaim", {
+    fetch("https://e-wallet-server.vercel.app/addClaim", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(claims),
@@ -65,6 +66,7 @@ const Rewards = () => {
       .then((data) => {
         if (data.acknowledged) {
           toast.success("Enjoy Claim");
+          navigate("/claim");
           refetch();
         }
       });
@@ -89,9 +91,9 @@ const Rewards = () => {
           <p className="text-[#9FDF29]">{points} Points</p>
         </div>
         <div className="bg-[#FE9F0D] rounded-full mt-4 mx-5 py-2">
-          {points <= 500 ? (
+          {points <= 2360 ? (
             <p className="text-center font-bold text-white">Bronze</p>
-          ) : points <= 1000 ? (
+          ) : points <= 11360 ? (
             <p className="text-center font-bold text-white">Silver</p>
           ) : (
             <p className="text-center font-bold text-white">Gold</p>

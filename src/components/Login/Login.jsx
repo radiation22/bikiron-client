@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthProvider";
 
 import bg from "../../assets/signbg.jpg";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/bikironlog.png";
 import icon from "../../assets/leftarrow.png";
 import { toast } from "react-toastify";
 import { FaAngleRight, FaEnvelope, FaLock } from "react-icons/fa";
@@ -15,6 +15,7 @@ import Loader from "../Loader/Loader";
 import ForgotPassword from "./ForgotPassword";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import app from "../../firebase/firebase.init";
+import Footer from "../Footer/Footer";
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
@@ -66,7 +67,7 @@ const Login = () => {
         const user = result.user;
         setLoginError("");
         toast.success("Login Successfully");
-        navigate("/location");
+        navigate(from, { replace: true });
         // navigate(from, { replace: true });
       })
       .catch((error) => {
@@ -79,25 +80,16 @@ const Login = () => {
   };
 
   return (
-    <div
-      style={{
-        backgroundImage: `url(${bg})`,
-        backgroundSize: "cover",
-        width: "100%",
-        backgroundRepeat: "no-repeat",
-        height: "500px",
-      }}
-      className=""
-    >
+    <div className="bg-[#50AE2A]">
       <Link to="/welcome">
         <div>
           <img className="h-12 pt-4 pl-4" src={icon} alt="" />
         </div>
       </Link>
-      <div className="flex justify-center pt-16 pb-16 ">
+      <div className="flex justify-center pt-8 pb-8 ">
         <img className="h-20" src={logo} alt="" />
       </div>
-      <div className="flex justify-center w-[85%] mx-auto  items-center">
+      <div className="flex justify-center w-[85%] mx-auto pb-20 items-center">
         <div className="flex w-full flex-col py-10 px-8 shadow  bg-white rounded-[25px] sm:p-10  text-gray-900">
           {/* Loading indicator */}
           {isLoading && <Loader></Loader>}
@@ -246,6 +238,7 @@ const Login = () => {
           </div>
         </>
       )}
+      <Footer></Footer>
     </div>
   );
 };

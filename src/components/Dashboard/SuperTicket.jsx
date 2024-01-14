@@ -8,7 +8,7 @@ const SuperTicket = ({ tickets }) => {
   const [trip, setTrip] = useState([]);
   useEffect(() => {
     // Fetch data from the URL
-    fetch(`https://nirapode-server.vercel.app/myTrip?email=${user?.email}`)
+    fetch(`https://e-wallet-server.vercel.app/myTrip?email=${user?.email}`)
       .then((response) => response.json())
       .then((data) => {
         // Update the state with the fetched data

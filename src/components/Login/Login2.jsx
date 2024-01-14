@@ -29,7 +29,7 @@ const Login2 = () => {
   const [phoneNumberError, setPhoneNumberError] = useState("");
   const [drivers, setDrivers] = useState([]);
   const [error, setError] = useState("");
-  const url = `https://nirapode-server.vercel.app/drivers`;
+  const url = `https://e-wallet-server.vercel.app/drivers`;
   useEffect(() => {
     fetch(url)
       .then((res) => res.json())
@@ -42,7 +42,7 @@ const Login2 = () => {
     try {
       // Fetch user role based on email from your server
       const response = await fetch(
-        `https://nirapode-server.vercel.app/validateUserRole?email=${data.email}`
+        `https://e-wallet-server.vercel.app/validateUserRole?email=${data.email}`
       );
       const userData = await response.json();
 
@@ -116,7 +116,14 @@ const Login2 = () => {
       // console.log(user);
 
       await handleUpdateUser(data.name, data.email, imageUrl);
-      saveUser(data.name, data.email, userRole, drivers?.length + 1, imageUrl);
+      saveUser(
+        data.name,
+        data.email,
+        userRole,
+        drivers?.length + 1,
+        imageUrl,
+        0
+      );
 
       toast.success("Successfully registered");
       navigate("/dashboard");
@@ -127,9 +134,9 @@ const Login2 = () => {
     }
   };
 
-  const saveUser = (name, email, userRole, busNo, imageUrl) => {
-    const user = { name, email, userRole, busNo, imageUrl };
-    fetch("https://nirapode-server.vercel.app/drivers", {
+  const saveUser = (name, email, userRole, busNo, imageUrl, balance) => {
+    const user = { name, email, userRole, busNo, imageUrl, balance };
+    fetch("https://e-wallet-server.vercel.app/drivers", {
       method: "POST",
       headers: {
         "content-type": "application/json",

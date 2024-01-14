@@ -24,7 +24,7 @@ export default function App() {
       if (currentSlide === swiperInstance.slides.length) {
         // Check if the current slide is the last one
         // Navigate to the next route when on the last slide
-        navigate("/home");
+        navigate("/allLibrary");
       } else {
         // Go to the next slide if it's not the last slide
         swiperInstance.slideNext();
@@ -36,12 +36,12 @@ export default function App() {
   return (
     <>
       <div className="flex z-0 justify-between">
-        <Link to="/home">
+        <Link to="/allLibrary">
           <img className="h-24" src={skip} alt="" />
         </Link>
-        <img className="relative h-24 mt-6 mr-6" src={bus2} alt="" />
+        {/* <img className="relative h-24 mt-6 mr-6" src={bus2} alt="" /> */}
       </div>
-      <Link to="/home">
+      <Link to="/allLibrary">
         <p className="absolute top-10 z-40 left-10 text-lg text-white">Skip</p>
       </Link>
 

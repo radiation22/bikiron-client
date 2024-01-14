@@ -5,24 +5,19 @@ const Page1 = () => {
   return (
     <div className=" pb-[40px]">
       <div className="">
-        <img className="w-full" src={slid1} alt="" />
-        <div className="mt-[-50px]">
-          <p className="text-[#232323] font-bold text-xl">Welcome</p>
-          <p className="text-sm mx-10 text-center mb-10 text-[#474d53]">
-            Greetings From Nirapode family. it's a public transport automation{" "}
-            <br />
-            service which is a product/sister concern of{" "}
-            <a
-              className="underline text-green-500"
-              href="https://radiationgroup.tech/"
-            >
-              Radiation corporation.
-            </a>
-            <span className="text-green-500">Developed by :</span>
-            <a className="underline" href="https://ceo.radiationgroup.tech/">
-              Md Habibul Islam
-            </a>{" "}
-            & Radiation Software Team (Mr. Thohidul Islam, so on).
+        <img className="h-[100px] mx-auto mb-5" src={slid1} alt="" />
+        <div className="">
+          <p className="text-[#232323] font-bold mb-5 text-xl">বিনামূল্যে বই</p>
+          <p className="text-sm mx-5 text-justify mb-10 text-[#474d53]">
+            বই পড়তে এবং জ্ঞান অর্জনে আগ্রহী ব্যক্তিদের জন্য একটি অমূল্যবান
+            সুযোগ হচ্ছে বিনামূল্যে বই। এটি একটি সাধারিতা মডেল, যেটি প্রতিভান,
+            বিজ্ঞান, উদ্ভাবন, উপন্যাস, কবিতা, এবং অন্যান্য বিষয়ে মূল্যবান লেখা
+            সরবরাহ করে। বই একজন পাঠকের জীবনে এক অমূল্য সঙ্গী। কিন্তু বিভিন্ন
+            কারণে একজন মানুষ সমৃদ্ধিতে চাইলে বই ক্রয় করতে ব্যয় করতে পারে না।
+            এই সময়ে বিনামূল্যে বই পেতে সহজ এবং সহযোগিতা সাপেক্ষে বৃদ্ধি পেতে
+            আমরা বিনামূল্যে বই অনুভব করি।বিকিরণ পরিবার পাঠাগারকে করেছে উন্মুক্ত।
+            বই পড়ার সুযোগ কে করেছে বিনামূল্য। বিনামূল্যে বই পেতে বিকিরণ অ্যাপ
+            অতি সহজ করে দিয়েছে, এখন বিনামূল্যে বই হাতের মুঠে।
           </p>
         </div>
       </div>

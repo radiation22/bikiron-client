@@ -14,7 +14,7 @@ const DriverRoute = ({ children }) => {
       const fetchData = async () => {
         try {
           const response = await fetch(
-            `https://nirapode-server.vercel.app/validateUserRole?email=${user?.email}`
+            `https://e-wallet-server.vercel.app/validateUserRole?email=${user?.email}`
           );
           const userData = await response.json();
 

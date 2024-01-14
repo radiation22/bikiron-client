@@ -8,7 +8,7 @@ const Delivered = () => {
   const [totalPassengerSum, setTotalPassengerSum] = useState(0);
 
   useEffect(() => {
-    const url = "https://nirapode-server.vercel.app/ticket";
+    const url = "https://e-wallet-server.vercel.app/ticket";
 
     fetch(url)
       .then((res) => res.json())

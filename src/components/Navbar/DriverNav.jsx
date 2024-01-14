@@ -15,15 +15,26 @@ import search from "../../assets/search.png";
 import bell from "../../assets/bell.png";
 import bus from "../../assets/bus1.png";
 import ticket2 from "../../assets/ticket2.png";
+import { useEffect } from "react";
 
 const DriverNav = () => {
   const [notificationCount, setNotificationCount] = useState(0);
   const navigate = useNavigate();
   const { user, logOut } = useContext(AuthContext);
-
+  const [balance, setBalance] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
 
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const url = `https://e-wallet-server.vercel.app/driverBalance?email=${user?.email}`;
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        const balance = data.map((bal) => setBalance(bal?.balance));
+        refetch();
+      });
+  }, [user]);
 
   const handleSignOut = () => {
     logOut()
@@ -47,6 +58,10 @@ const DriverNav = () => {
       setShowDropdown(false);
     }
   };
+  const [isBalanceVisible, setIsBalanceVisible] = useState(false);
+  const toggleBalanceVisibility = () => {
+    setIsBalanceVisible(!isBalanceVisible);
+  };
 
   return (
     <>
@@ -63,6 +78,13 @@ const DriverNav = () => {
           </div>
           <div className="flex-grow relative"></div>
           <div className="ml-4 flex items-center">
+            <input
+              readOnly
+              className="text-black text-center rounded-full ps-3 outline outline-yellow-400 mr-3 cursor-pointer"
+              onClick={toggleBalanceVisibility}
+              value={isBalanceVisible ? `${balance} BDT` : "Balance"}
+              type="text"
+            />
             <button className="mr-4" onClick={handleNotificationClick}>
               <div className="relative">
                 <img className="h-6" src={bell} alt="" />

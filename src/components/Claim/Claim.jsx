@@ -22,7 +22,7 @@ const Claim = () => {
   const [secret, setSecret] = useState(null);
   useEffect(() => {
     // Fetch data from the URL
-    const url = `https://nirapode-server.vercel.app/claims?email=${user?.email}`;
+    const url = `https://e-wallet-server.vercel.app/claims?email=${user?.email}`;
     fetch(url)
       .then((response) => response.json())
       .then((data) => {

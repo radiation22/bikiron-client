@@ -69,6 +69,18 @@ import Login2b from "../components/Login/Login2b";
 import ShowTicketb from "../components/UserTicket/ShowTicketb";
 import Claimb from "../components/Claim/Claimb";
 import Notfound from "../components/Notfound/Notfound";
+import Recharge from "../components/Recharge/Recharge";
+import RechargeHome from "../components/Recharge/RechargeHome";
+import Agent from "../components/Login/Agent";
+import AllPackages from "../components/AllPackages/AllPackages";
+import FullLibrary from "../components/FullLibrary/FullLibrary";
+import ShowDetails from "../components/ShowDetails/ShowDetails";
+import MemberShip from "../components/MemberShip/MemberShip";
+import AddLibrary from "../components/AddLibrary/AddLibrary";
+import MyLibrary from "../components/MyLibrary/MyLibrary";
+import AllLibrary from "../components/AllLibrary/AllLibrary";
+import UserAccount from "../components/UserAccount/UserAccount";
+import Payment from "../components/Payment/Payment";
 
 export const router = createBrowserRouter([
   {
@@ -81,10 +93,47 @@ export const router = createBrowserRouter([
         path: "/",
         element: <StartPage></StartPage>,
       },
+      {
+        path: "/allLibrary",
+        element: <AllLibrary></AllLibrary>,
+      },
 
       {
         path: "/home",
         element: <Main></Main>,
+      },
+      {
+        path: "/payment",
+        element: <Payment></Payment>,
+      },
+      {
+        path: "/allPackage",
+        element: <AllPackages></AllPackages>,
+      },
+      {
+        path: "/membership",
+        element: <MemberShip></MemberShip>,
+      },
+      {
+        path: "/fullLibrary/:email",
+        element: <FullLibrary></FullLibrary>,
+      },
+      {
+        path: "/details/:id",
+        element: <ShowDetails></ShowDetails>,
+      },
+      {
+        path: "/userAccount/:email",
+        element: <UserAccount></UserAccount>,
+      },
+
+      {
+        path: "/recharge",
+        element: <RechargeHome></RechargeHome>,
+      },
+      {
+        path: "/addLibrary",
+        element: <AddLibrary></AddLibrary>,
       },
       {
         path: "/language",
@@ -115,6 +164,14 @@ export const router = createBrowserRouter([
         element: <Register></Register>,
       },
       {
+        path: "/myLibrary",
+        element: (
+          <PrivateRoute>
+            <MyLibrary></MyLibrary>
+          </PrivateRoute>
+        ),
+      },
+      {
         path: "/registerb",
         element: <Registerb></Registerb>,
       },
@@ -142,98 +199,12 @@ export const router = createBrowserRouter([
           </PrivateRouteb>
         ),
       },
-      {
-        path: "/chooseBus/:busNumber",
-        element: (
-          <PrivateRoute>
-            <ChooseBus></ChooseBus>
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/chooseBusb/:busNumber",
-        element: (
-          <PrivateRouteb>
-            <ChooseBusb></ChooseBusb>
-          </PrivateRouteb>
-        ),
-      },
-      {
-        path: "/ticket",
-        element: (
-          <PrivateRoute>
-            <TicketDetails></TicketDetails>
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/ticketb",
-        element: (
-          <PrivateRouteb>
-            <TicketDetailsb></TicketDetailsb>
-          </PrivateRouteb>
-        ),
-      },
-      {
-        path: "/dashboard",
-        element: (
-          <DriverRoute>
-            <Supervisor1></Supervisor1>
-          </DriverRoute>
-        ),
-      },
-      {
-        path: "/dashboardb",
-        element: (
-          <DriverRouteb>
-            <Supervisor1b></Supervisor1b>
-          </DriverRouteb>
-        ),
-      },
+
       {
         path: "/deliver",
         element: <Delivered></Delivered>,
       },
-      {
-        path: "/manager",
-        element: (
-          <AdminRoute>
-            <Manager></Manager>
-          </AdminRoute>
-        ),
-      },
-      {
-        path: "/myTicket",
-        element: (
-          <PrivateRoute>
-            <TicketInfo></TicketInfo>
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/myTicketb",
-        element: (
-          <PrivateRouteb>
-            <TicketInfob></TicketInfob>
-          </PrivateRouteb>
-        ),
-      },
-      {
-        path: "/trip",
-        element: (
-          <DriverRoute>
-            <SuperTicket></SuperTicket>
-          </DriverRoute>
-        ),
-      },
-      {
-        path: "/tripb",
-        element: (
-          <DriverRouteb>
-            <Tripb></Tripb>
-          </DriverRouteb>
-        ),
-      },
+
       {
         path: "/login",
         element: <Login></Login>,
@@ -250,22 +221,7 @@ export const router = createBrowserRouter([
         path: "/login2b",
         element: <Login2b></Login2b>,
       },
-      {
-        path: "/ticket/:id",
-        element: (
-          <PrivateRoute>
-            <ShowTicket></ShowTicket>
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/ticketb/:id",
-        element: (
-          <PrivateRouteb>
-            <ShowTicketb></ShowTicketb>
-          </PrivateRouteb>
-        ),
-      },
+
       {
         path: "/slider",
         element: <Slider></Slider>,
@@ -279,61 +235,10 @@ export const router = createBrowserRouter([
         element: <Admin></Admin>,
       },
       {
-        path: "/driverSetting",
-        element: (
-          <DriverRoute>
-            <DriverSetting></DriverSetting>
-          </DriverRoute>
-        ),
+        path: "/agent",
+        element: <Agent></Agent>,
       },
-      {
-        path: "/driverSettingb",
-        element: (
-          <DriverRouteb>
-            <DriverSettingb></DriverSettingb>
-          </DriverRouteb>
-        ),
-      },
-      {
-        path: "/driverProfile",
-        element: <DriverProfile></DriverProfile>,
-      },
-      {
-        path: "/driverProfileb",
-        element: <DriverProfileb></DriverProfileb>,
-      },
-      {
-        path: "/donation",
-        element: (
-          <PrivateRoute>
-            <Donation></Donation>
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/donationb",
-        element: (
-          <PrivateRouteb>
-            <Donationb></Donationb>
-          </PrivateRouteb>
-        ),
-      },
-      {
-        path: "/rewards",
-        element: (
-          <PrivateRoute>
-            <Rewards></Rewards>
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/rewardsb",
-        element: (
-          <PrivateRouteb>
-            <Rewardsb></Rewardsb>
-          </PrivateRouteb>
-        ),
-      },
+
       {
         path: "/profile",
         element: (
@@ -352,7 +257,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/setting",
-        element: <Setting></Setting>,
+        element: (
+          <PrivateRoute>
+            <Setting></Setting>
+          </PrivateRoute>
+        ),
       },
       {
         path: "/settingb",
@@ -413,38 +322,6 @@ export const router = createBrowserRouter([
       {
         path: "/notificationb",
         element: <Notificationb></Notificationb>,
-      },
-      {
-        path: "/driverNotification",
-        element: <DriverNotification></DriverNotification>,
-      },
-      {
-        path: "/driverNotificationb",
-        element: <DriverNotificationb></DriverNotificationb>,
-      },
-      {
-        path: "/driverDonate",
-        element: <DriverDonate></DriverDonate>,
-      },
-      {
-        path: "/driverDonateb",
-        element: <DriverDonateb></DriverDonateb>,
-      },
-      {
-        path: "/driverReward",
-        element: <DriverReward></DriverReward>,
-      },
-      {
-        path: "/driverRewardb",
-        element: <DriverRewardb></DriverRewardb>,
-      },
-      {
-        path: "/driverMore",
-        element: <DriverMore></DriverMore>,
-      },
-      {
-        path: "/driverMoreb",
-        element: <DriverMoreb></DriverMoreb>,
       },
     ],
   },

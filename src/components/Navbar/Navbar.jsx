@@ -1,77 +1,60 @@
-import React, { useContext, useState, useRef } from "react";
-import { FaBell, FaChartLine, FaSearch, FaUser } from "react-icons/fa";
+import React, { useContext, useState } from "react";
+import { FaShoppingCart } from "react-icons/fa";
 import { FaGear, FaHandHoldingDollar, FaGift } from "react-icons/fa6";
 import { AuthContext } from "../context/AuthProvider";
 import { toast } from "react-hot-toast";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import ticket from "../../assets/ticket.png";
-import reward from "../../assets/reward.png";
-import reward2 from "../../assets/gift2.png";
-import donate from "../../assets/donate.png";
-import donate2 from "../../assets/donate2.png";
-import more from "../../assets/more.png";
-import more2 from "../../assets/moreactive.png";
-import search from "../../assets/search.png";
-import bell from "../../assets/bell.png";
-import bus from "../../assets/bus1.png";
-import ticket2 from "../../assets/ticket2.png";
+
+import { useQuery } from "@tanstack/react-query";
+import CartDropdown from "./CartDropdown";
 
 const Navbar = () => {
   const [notificationCount, setNotificationCount] = useState(0);
   const navigate = useNavigate();
   const { user, logOut } = useContext(AuthContext);
 
+  const [loading, setLoading] = useState(true);
+
   const [showDropdown, setShowDropdown] = useState(false);
-
-  const dropdownRef = useRef(null);
-
-  const handleSignOut = () => {
-    logOut()
-      .then((result) => {
-        toast.success("You have logged out");
-        navigate("/home");
-      })
-      .catch((error) => console.log(error));
-  };
-
-  const handleNotificationClick = () => {
-    setNotificationCount(0);
-    navigate("/notification");
-  };
+  // const [cartItems, setCartItems] = useState([]);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
 
-  const closeDropdown = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setShowDropdown(false);
-    }
+  const closeDropdown = () => {
+    setShowDropdown(false);
   };
 
-  const showTicket = () => {
-    navigate("/myTicket");
-  };
+  // Define the query key
+  const queryKey = ["tickets", user?.email];
+
+  // Use the useQuery hook to fetch data
+  const { data: cartItems = [], refetch } = useQuery(
+    queryKey,
+    async () => {
+      const url = `https://bikiron-server.vercel.app/cart`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const myCart = data.filter((d) => d?.email === user?.email);
+      setLoading(false);
+      return myCart;
+    },
+    {
+      enabled: !!user?.email, // Only fetch data when user.email is available
+    }
+  );
 
   return (
     <>
-      <header className="bg-[#04A83F] w-full px-3 text-white pt-1">
-        <div className="container mx-auto flex items-center">
-          <div className="flex">
-            {/* Add the user icon */}
-            <div className="mr-4">
-              <img className="h-6" src={bus} alt="" />
-            </div>
-            {/* Add the cog icon */}
-            <div className="mr-4">
-              <img className="h-6" src={search} alt="" />
-            </div>
-          </div>
-          <div className="flex-grow relative"></div>
+      <header className="bg-[#50AE2A] w-full px-3 text-white pt-1">
+        <div className="container mx-auto flex items-center justify-between">
+          <div></div>
+
           <div className="ml-4 flex items-center">
-            <button className="mr-4" onClick={handleNotificationClick}>
+            <button className="mr-4">
               <div className="relative">
-                <img className="h-6" src={bell} alt="" />
+                <FaShoppingCart onClick={toggleDropdown} className="text-2xl" />
                 {notificationCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-2 py-1">
                     {notificationCount}
@@ -79,10 +62,7 @@ const Navbar = () => {
                 )}
               </div>
             </button>
-            <div
-              className="flex flex-col items-center py-4 relative"
-              onClick={toggleDropdown}
-            >
+            <div className="flex flex-col items-center py-4 relative">
               {/* Add your user profile image */}
               <Link to="/setting">
                 {" "}
@@ -92,125 +72,18 @@ const Navbar = () => {
                   alt=""
                 />
               </Link>
-              {/* {showDropdown && (
-                <div
-                  className="absolute w-[80px] top-10 right-0 bg-rose-400 border shadow-lg rounded-md"
-                  ref={dropdownRef}
-                >
-                  <button
-                    onClick={handleSignOut}
-                    className="block w-full px-2 py-1 text-left hover:bg-red-500 hover:text-white"
-                  >
-                    Sign Out
-                  </button>
-                </div>
-              )} */}
             </div>
           </div>
         </div>
+        {showDropdown && (
+          <CartDropdown
+            loading={loading}
+            cartItems={cartItems}
+            refetch={refetch}
+            onClose={closeDropdown}
+          />
+        )}
       </header>
-
-      <footer className="bg-[#9DDE2A] w-full  text-white">
-        <div className="container mx-auto flex justify-around">
-          <NavLink
-            to="/myTicket"
-            className={({ isActive }) =>
-              isActive
-                ? "flex flex-col bg-white  px-4 py-3  items-center cursor-pointer"
-                : "flex flex-col  mt-1 py-2 items-center cursor-pointer"
-            }
-          >
-            {({ isActive }) => (
-              <>
-                {isActive ? (
-                  <>
-                    <img className="w-8 h-5" src={ticket2} alt="" />
-                    <span className="text-green-600 mt-1">Tickets</span>
-                  </>
-                ) : (
-                  <>
-                    <img className="w-8 h-5" src={ticket} alt="" />
-                    <span className="mt-1">Tickets</span>
-                  </>
-                )}
-              </>
-            )}
-          </NavLink>
-          <NavLink
-            to="/rewards"
-            className={({ isActive }) =>
-              isActive
-                ? "flex flex-col bg-white  px-4 py-3  items-center cursor-pointer"
-                : "flex flex-col  mt-1 items-center py-2 cursor-pointer"
-            }
-          >
-            {({ isActive }) => (
-              <>
-                {isActive ? (
-                  <>
-                    <img className="w-8 h-6" src={reward2} alt="" />
-                    <span className=" text-green-600">Your Gift</span>
-                  </>
-                ) : (
-                  <>
-                    <img className="w-8 h-6" src={reward} alt="" />
-                    <span className="">Your Gift</span>
-                  </>
-                )}
-              </>
-            )}
-          </NavLink>
-          <NavLink
-            to="/donation"
-            className={({ isActive }) =>
-              isActive
-                ? "flex flex-col bg-white  px-4 py-3  items-center cursor-pointer"
-                : "flex flex-col  mt-1 items-center py-2 cursor-pointer"
-            }
-          >
-            {({ isActive }) => (
-              <>
-                {isActive ? (
-                  <>
-                    <img className="w-8 h-6" src={donate2} alt="" />
-                    <span className=" text-green-600">Donate</span>
-                  </>
-                ) : (
-                  <>
-                    <img className="w-8 h-6" src={donate} alt="" />
-                    <span className="">Donate</span>
-                  </>
-                )}
-              </>
-            )}
-          </NavLink>
-
-          <NavLink
-            to="/more"
-            className={({ isActive }) =>
-              isActive
-                ? "flex flex-col bg-white  px-4 py-3  items-center cursor-pointer"
-                : "flex flex-col  mt-1 items-center py-2 cursor-pointer"
-            }
-          >
-            {({ isActive }) => (
-              <>
-                {isActive ? (
-                  <>
-                    <img className="w-6 h-6" src={more2} alt="" />
-                    <span className=" text-green-600">More</span>
-                  </>
-                ) : (
-                  <>
-                    <img className="w-6 h-6" src={more} alt="" />
-                    <span className="">More</span>
-                  </>
-                )}
-              </>
-            )}
-          </NavLink>
-        </div>
-      </footer>
     </>
   );
 };

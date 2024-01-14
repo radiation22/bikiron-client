@@ -16,7 +16,7 @@ function Inboxb() {
 
     // Update the client's message state
     const userMessage = { text: newMessage, sender: user?.email };
-    fetch("https://nirapode-server.vercel.app/addMessage", {
+    fetch("https://e-wallet-server.vercel.app/addMessage", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userMessage),
@@ -35,7 +35,7 @@ function Inboxb() {
     const fetchMessagesFromDatabase = async () => {
       try {
         const response = await fetch(
-          "https://nirapode-server.vercel.app/message"
+          "https://e-wallet-server.vercel.app/message"
         );
         if (response.ok) {
           const data = await response.json();

@@ -15,7 +15,7 @@ const ManagerNav = () => {
 
   useEffect(() => {
     // Fetch data from the URL
-    fetch("https://nirapode-server.vercel.app/trips")
+    fetch("https://e-wallet-server.vercel.app/trips")
       .then((response) => response.json())
       .then((data) => {
         const notificationLength = data.filter(
@@ -35,7 +35,7 @@ const ManagerNav = () => {
       status: "Approved",
     };
 
-    const url = `https://nirapode-server.vercel.app/adminApprove/${id}`;
+    const url = `https://e-wallet-server.vercel.app/adminApprove/${id}`;
 
     fetch(url, {
       method: "PUT",

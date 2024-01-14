@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import DriverFooterb from "./../Footer/DriverFooterb";
 import DriverNavb from "./../Navbar/DriverNavb";
 import { useNavigate } from "react-router-dom";
+import { FaEnvelope } from "react-icons/fa";
 const Supervisor1b = () => {
   const { user } = useContext(AuthContext);
   const [ticketNo, setTicketNo] = useState(0);
@@ -32,8 +33,29 @@ const Supervisor1b = () => {
   const navigate = useNavigate();
   const [trips, setTrips] = useState([]);
   const [secret, setSecret] = useState(null);
-
+  const [filteredNumbers, setFilteredNumbers] = useState([]);
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRechargeModalOpen, setIsRechargeModalOpen] = useState(false);
+  const [number, setNumber] = useState([]);
+  const [balances, setBalance] = useState(0);
+
+  const url = `https://e-wallet-server.vercel.app/walletUsers`;
+  useEffect(() => {
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => setNumber(data));
+  }, []);
+
+  useEffect(() => {
+    const url = `https://e-wallet-server.vercel.app/driverBalance?email=${user?.email}`;
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        const balance = data.map((bal) => setBalance(bal?.balance));
+        refetch();
+      });
+  }, [user]);
 
   const openModal = () => {
     if (busNo == 1) {
@@ -49,8 +71,13 @@ const Supervisor1b = () => {
     setIsModalOpen(true);
   };
 
+  const openRechargeModal = () => {
+    setIsRechargeModalOpen(true);
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
+    setIsRechargeModalOpen(false);
   };
 
   const onSubmit = (data) => {
@@ -85,7 +112,7 @@ const Supervisor1b = () => {
       secret,
     };
 
-    fetch("https://nirapode-server.vercel.app/addTicket", {
+    fetch("https://e-wallet-server.vercel.app/addTicket", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(tickets),
@@ -110,7 +137,7 @@ const Supervisor1b = () => {
       try {
         // Fetch driver data and extract bus numbers
         const driverResponse = await fetch(
-          `https://nirapode-server.vercel.app/singleDrivers?email=${user?.email}`
+          `https://e-wallet-server.vercel.app/singleDrivers?email=${user?.email}`
         );
 
         const driverData = await driverResponse.json();
@@ -122,7 +149,7 @@ const Supervisor1b = () => {
 
         // Fetch bus ticket data
         const busTicketResponse = await fetch(
-          `https://nirapode-server.vercel.app/ticket`
+          `https://e-wallet-server.vercel.app/ticket`
         );
         const busTicketData = await busTicketResponse.json();
         const confirmedTickets = busTicketData.filter((ticket) => {
@@ -186,7 +213,7 @@ const Supervisor1b = () => {
 
   useEffect(() => {
     // Fetch data from the URL
-    fetch("https://nirapode-server.vercel.app/trips")
+    fetch("https://e-wallet-server.vercel.app/trips")
       .then((response) => response.json())
       .then((data) => {
         const todayTrips = data.filter((trip) => {
@@ -227,7 +254,7 @@ const Supervisor1b = () => {
 
   useEffect(() => {
     // Fetch data from the URL
-    fetch("https://nirapode-server.vercel.app/trips")
+    fetch("https://e-wallet-server.vercel.app/trips")
       .then((response) => response.json())
       .then((data) => {
         // Filter trips by today's date
@@ -273,7 +300,7 @@ const Supervisor1b = () => {
       formattedDate,
     };
 
-    fetch("https://nirapode-server.vercel.app/addTrip", {
+    fetch("https://e-wallet-server.vercel.app/addTrip", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(tripsInfo),
@@ -284,6 +311,78 @@ const Supervisor1b = () => {
           toast.success("Trip Confirmed");
           window.location.reload();
         }
+      });
+  };
+
+  const handlePhoneNumberChange = (e) => {
+    const inputPhoneNumber = e.target.value;
+    setPhoneNumber(inputPhoneNumber); // Update the input value in state
+
+    const filtered = number.filter((entry) => {
+      if (entry.phoneNumber) {
+        return entry.phoneNumber.includes(inputPhoneNumber);
+      }
+      return false;
+    });
+    console.log(filtered);
+
+    setFilteredNumbers(filtered);
+  };
+
+  const onSubmit1 = (data) => {
+    const balance = data.balance;
+    if (balances <= balance) {
+      return toast.error("You have not enough balance");
+    }
+    const details = {
+      phoneNumber: data.phoneNumber,
+      balance: balance,
+    };
+
+    const url = `https://e-wallet-server.vercel.app/addBalance`;
+
+    fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(details),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // First PUT request succeeded, now send the second PUT request
+          const secondDetails = {
+            email: user?.email,
+            balance: balance,
+          };
+
+          const secondUrl = `https://e-wallet-server.vercel.app/decreaseDriver`;
+
+          return fetch(secondUrl, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(secondDetails),
+          });
+        } else {
+          // First PUT request failed
+          toast.error("Recharge Failed");
+        }
+      })
+      .then((secondResponse) => secondResponse.json())
+      .then((secondData) => {
+        if (secondData.success) {
+          toast.success("Recharge  Success");
+          window.location.reload();
+        } else {
+          toast.error("Recharge Failed");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        toast.error("Recharge Failed");
       });
   };
 
@@ -308,6 +407,83 @@ const Supervisor1b = () => {
             Refresh
           </button>
         </div>
+        <button
+          onClick={openRechargeModal}
+          className=" ml-2 px-4 bg-[#9DDE2A] text-white uppercase py-2 rounded-lg my-3"
+        >
+          রিচার্জ দিন
+        </button>
+        {isRechargeModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="modal-overlay" onClick={closeModal}></div>
+            <div className="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+              <div className="modal-content py-4 text-left px-6">
+                <div className="flex justify-between items-center pb-3">
+                  <p className="text-2xl font-bold"></p>
+                  <button
+                    className="modal-close-button rounded-full cursor-pointer z-50 bg-red-400 px-3 py-1 text-white"
+                    onClick={closeModal}
+                  >
+                    X
+                  </button>
+                </div>
+                <div>
+                  <form onSubmit={handleSubmit(onSubmit1)}>
+                    <div>
+                      <label>Phone Number</label>
+                      <div className="relative">
+                        <input
+                          {...register("phoneNumber")}
+                          type="number"
+                          name="phoneNumber"
+                          id="email"
+                          required
+                          placeholder="   Phone Number"
+                          className="w-full pl-10 py-3 drop-shadow-xl border-2 rounded-full border-[#54B89C] focus:outline-green-500 text-gray-900"
+                          data-temp-mail-org="0"
+                          value={phoneNumber} // Bind input value to the state
+                          onChange={handlePhoneNumberChange}
+                        />
+                        <ul>
+                          {filteredNumbers.map((filteredNumber) => (
+                            <li key={filteredNumber.id}>
+                              {filteredNumber.phoneNumber}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      {/* {errors.email && <p>{errors.email.message}</p>} */}
+                    </div>
+
+                    <div>
+                      <label>Balance</label>
+                      <div className="relative">
+                        <input
+                          {...register("balance")}
+                          type="number"
+                          name="balance"
+                          id="balance"
+                          required
+                          placeholder="   Balance"
+                          className="w-full pl-10 py-3 drop-shadow-xl border-2 rounded-full border-[#54B89C] focus:outline-green-500 text-gray-900"
+                          data-temp-mail-org="0"
+                        />
+                      </div>
+                      {/* {errors.balance && <p>{errors.balance.message}</p>} */}
+                    </div>
+
+                    <button
+                      className="w-full mt-5 px-8 py-3 font-semibold drop-shadow-xl rounded-full bg-[#9DDE2A] hover:text-white text-gray-100"
+                      type="submit"
+                    >
+                      Confirm Recharge
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         <button
           onClick={openModal}
           className=" ml-2 px-4 bg-[#9DDE2A] text-white uppercase py-2 rounded-lg my-3"

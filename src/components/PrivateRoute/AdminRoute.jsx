@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
@@ -15,11 +14,16 @@ const AdminRoute = ({ children }) => {
       const fetchData = async () => {
         try {
           const response = await fetch(
-            `https://nirapode-server.vercel.app/validateAdminRole?email=${user?.email}`
+            `https://e-wallet-server.vercel.app/validateAdminRole?email=${user.email}`
           );
-          const userData = await response.json();
-          console.log(userData);
-          setRole(userData.userRole); // Assuming the role is in the response
+          if (response.ok) {
+            const userData = await response.json();
+            console.log(userData);
+            setRole(userData.userRole);
+          } else {
+            // Handle the case where the response is not OK (e.g., 404 or 500 error)
+            console.error("Error fetching user role:", response.statusText);
+          }
         } catch (error) {
           console.error("Error fetching user role:", error);
         }
@@ -30,7 +34,7 @@ const AdminRoute = ({ children }) => {
   }, [user]);
 
   if (loading) {
-    return <Loader></Loader>;
+    return <Loader />;
   }
 
   if (!user || role !== "admin") {
@@ -38,7 +42,7 @@ const AdminRoute = ({ children }) => {
     return <Navigate to="/admin" state={{ from: location }} replace />;
   }
 
-  // Allow access to the protected route for "driver" role
+  // Allow access to the protected route for "admin" role
   return children;
 };
 

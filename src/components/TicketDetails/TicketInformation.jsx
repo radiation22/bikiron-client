@@ -36,7 +36,7 @@ const TicketInformation = ({ ticket, refetch }) => {
   const ticketDate = formattedDate;
   const isDateExpired = ticketDate < formattedDate1;
 
-  const url = `https://nirapode-server.vercel.app/ticket`;
+  const url = `https://e-wallet-server.vercel.app/ticket`;
   fetch(url)
     .then((res) => res.json())
     .then((data) => setTickets(data));
@@ -52,7 +52,7 @@ const TicketInformation = ({ ticket, refetch }) => {
       e.target.value == 35550 ||
       e.target.value == 41110
     ) {
-      const url = `https://nirapode-server.vercel.app/myticket/${item}`;
+      const url = `https://e-wallet-server.vercel.app/myticket/${item}`;
 
       fetch(url, {
         method: "PUT",
@@ -126,10 +126,10 @@ const TicketInformation = ({ ticket, refetch }) => {
             <h1 className=" uppercase text-xs text-[#A3A3A3]">To</h1>
           </div>
           <div className="flex items-center px-10 justify-between">
-            <h1 className=" text-[#41200B]  uppercase">{startPoint}</h1>
-            <img src="" alt="" />
+            <h1 className=" text-[#41200B] text-sm uppercase">{startPoint}</h1>
+            <FaArrowRight></FaArrowRight>
 
-            <h1 className=" text-[#41200B] uppercase">{destination}</h1>
+            <h1 className=" text-[#41200B] text-sm uppercase">{destination}</h1>
           </div>
 
           <div className="flex py-1 px-10 justify-between">

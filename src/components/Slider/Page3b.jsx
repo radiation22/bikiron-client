@@ -1,8 +1,5 @@
 import React from "react";
-import slid1 from "../../assets/sliding.jpg";
-import skip from "../../assets/skip.png";
-import bus2 from "../../assets/bus2.png";
-import app from "./../../firebase/firebase.init";
+import slid1 from "../../assets/slidebus2.png";
 
 const Page3b = () => {
   return (

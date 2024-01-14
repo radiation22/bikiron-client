@@ -18,7 +18,7 @@ const TicketInfo = () => {
   const { data: tickets = [], refetch } = useQuery(
     queryKey,
     async () => {
-      const url = `https://nirapode-server.vercel.app/myTicket?email=${user?.email}`;
+      const url = `https://e-wallet-server.vercel.app/myTicket?email=${user?.email}`;
       const res = await fetch(url);
       const data = await res.json();
       return data;

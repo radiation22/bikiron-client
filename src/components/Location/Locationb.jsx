@@ -13,7 +13,7 @@ const Locationb = () => {
   const [selectedBus, setSelectedBus] = useState("");
   const [drivers, setDrivers] = useState([]);
   const navigate = useNavigate();
-  const url = `https://nirapode-server.vercel.app/drivers`;
+  const url = `https://e-wallet-server.vercel.app/drivers`;
   useEffect(() => {
     fetch(url)
       .then((res) => res.json())

@@ -1,5 +1,5 @@
 import React from "react";
-import slid1 from "../../assets/sliding.jpg";
+import slid1 from "../../assets/slideBus.jpg";
 import skip from "../../assets/skip.png";
 import bus2 from "../../assets/bus2.png";
 import { initializeApp } from "firebase/app";

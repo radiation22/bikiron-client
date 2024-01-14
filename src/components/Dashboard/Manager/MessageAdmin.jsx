@@ -7,12 +7,19 @@ const MessageAdmin = ({ messages }) => {
 
   const handleMessage = (e) => {
     if (newMessage?.trim() === "") return;
+
+    // Get the current date in "YYYY-MM-DD" format
+    const currentDate = new Date().toISOString().split("T")[0];
+
     const userMessage = {
       text: newMessage,
       sender: "Admin",
       targetEmail: selectedSender,
-    }; // Use the selected sender or default to "Admin"
-    fetch("https://nirapode-server.vercel.app/addMessage", {
+      date: currentDate,
+      status: "unseen", // Add the current date to the message
+    };
+
+    fetch("https://e-wallet-server.vercel.app/addMessage", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userMessage),
@@ -59,6 +66,7 @@ const MessageAdmin = ({ messages }) => {
             onChange={(e) => setSelectedSender(e.target.value)}
           >
             <option value="">Select Sender</option>
+            <option value="all">All</option>
             {messages?.map((message, index) => (
               <option key={index} value={message.sender}>
                 {message.sender}

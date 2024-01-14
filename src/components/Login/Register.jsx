@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthProvider";
 
 import bg from "../../assets/signbg.jpg";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/bikironlog.png";
 import icon from "../../assets/leftarrow.png";
 import { toast } from "react-toastify";
 import { FaAngleRight, FaEnvelope, FaLock } from "react-icons/fa";
@@ -25,8 +25,29 @@ const Register = () => {
   const from = location.state?.from?.pathname || "/";
   const { createUser, updateUserProfile, signIn } = useContext(AuthContext);
   const [selectedCity, setSelectedCity] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState("");
+  const [selectedMembership, setSelectedMembership] = useState("basic");
+  const [selectedPayment, setSelectedPayment] = useState("");
+  const [transactionId, setTransactionId] = useState("");
+  const handlePaymentChange = (event) => {
+    setSelectedPayment(event.target.value);
+  };
+  const validatePhoneNumber = (phoneNumber) => {
+    if (phoneNumber.length === 11) {
+      setPhoneNumberError(""); // No error
+      return true;
+    } else {
+      setPhoneNumberError("Phone number must be 11 characters");
+      return false;
+    }
+  };
 
-  const [showPopup, setShowPopup] = useState(false);
+  const handleMembershipChange = (event) => {
+    setSelectedMembership(event.target.value);
+  };
+
+  console.log(selectedMembership);
 
   const handleCityChange = (e) => {
     const selectedValue = e.target.value;
@@ -38,15 +59,6 @@ const Register = () => {
     }
   };
 
-  const cities = [
-    { value: "Chattogram", label: "Chattogram" },
-    { value: "Dhaka", label: "Dhaka" },
-    { value: "Rajshahi", label: "Rajshahi" },
-    { value: "Sylhet", label: "Sylhet" },
-    { value: "Khulna", label: "Khulna" },
-    // Add more cities here
-  ];
-
   const uploadImageToImgBB = async (imageFile) => {
     try {
       // Create a FormData object to send the image file
@@ -54,7 +66,7 @@ const Register = () => {
       formData.append("image", imageFile);
 
       // Your ImgBB API key
-      const apiKey = "8c45a65277afef5acc89d1665e868e9c";
+      const apiKey = "8ddaa6c8df804bd79444e3f5ea2c7fd5";
 
       // Make a POST request to the ImgBB API endpoint
       const response = await fetch(
@@ -76,7 +88,7 @@ const Register = () => {
       }
     } catch (error) {
       // Handle any errors that occurred during the fetch
-      console.error("Error uploading image:", error);
+      setLoginError("Error uploading image:", error);
       throw error;
     }
   };
@@ -89,30 +101,71 @@ const Register = () => {
       const result = await createUser(data.email, data.password);
       const user = result.user;
 
-      await handleUpdateUser(data.name, data.email, imageUrl, selectedCity);
+      await handleUpdateUser(data.name, data.email, imageUrl, data.phoneNumber);
+      saveUser(
+        data.name,
+        data.email,
+        phoneNumber,
+        selectedMembership,
+        transactionId,
+        selectedPayment
+      );
 
       toast.success("Successfully registered");
-      navigate("/location");
+      navigate("/allLibrary");
     } catch (error) {
-      console.error("Image upload or user creation failed:", error);
+      setLoginError("Image upload or user creation failed:", error);
     } finally {
       setIsSignUpLoading(false); // Set loading to false when the sign-up process is complete
     }
   };
 
-  const handleUpdateUser = async (name, email, photoURL, city) => {
+  const saveUser = (
+    name,
+    email,
+    phoneNumber,
+    selectedMembership,
+    transactionId,
+    selectedPayment
+  ) => {
+    const user = {
+      name,
+      email,
+      phoneNumber,
+      selectedMembership,
+      transactionId,
+      selectedPayment,
+      status: "pending",
+    };
+    fetch("https://bikiron-server.vercel.app/addUsers", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (loading) {
+          return <Loader></Loader>;
+        }
+        setCreatedUserEmail(email);
+      });
+  };
+
+  const handleUpdateUser = async (name, email, photoURL, phoneNumber) => {
     const profile = {
       displayName: name,
       email,
       photoURL,
-      city,
+      phoneNumber,
       // Include the uploaded image URL in the user's profile
     };
 
     try {
       await updateUserProfile(profile);
     } catch (error) {
-      console.error("Error updating user profile:", error);
+      setLoginError("Error updating user profile:", error);
     }
   };
 
@@ -123,22 +176,13 @@ const Register = () => {
   };
 
   return (
-    <div
-      style={{
-        backgroundImage: `url(${bg})`,
-        backgroundSize: "cover",
-        width: "100%",
-        backgroundRepeat: "no-repeat",
-        height: "500px",
-      }}
-      className=""
-    >
+    <div className="bg-[#50AE2A]">
       <Link to="/welcome">
         <div>
           <img className="h-12 pt-4 pl-4" src={icon} alt="" />
         </div>
       </Link>
-      <div className="flex justify-center pt-16 pb-16 ">
+      <div className="flex justify-center pb-8">
         <img className="h-20" src={logo} alt="" />
       </div>
       <div className="flex justify-center w-[85%] mx-auto  items-center">
@@ -161,7 +205,7 @@ const Register = () => {
                   name="name"
                   id="name"
                   required
-                  placeholder="    Enter Your Name"
+                  placeholder="Enter Your Name"
                   className="w-full pl-10 py-3 drop-shadow-xl border-2 rounded-full border-[#54B89C] focus:outline-green-500 text-gray-900"
                 />
               </div>
@@ -173,7 +217,7 @@ const Register = () => {
                   name="email"
                   id="email"
                   required
-                  placeholder="   Enter Your Email"
+                  placeholder="Enter Your Email"
                   className="w-full pl-10 py-3 drop-shadow-xl border-2 rounded-full border-[#54B89C] focus:outline-green-500 text-gray-900"
                   data-temp-mail-org="0"
                 />
@@ -198,33 +242,27 @@ const Register = () => {
                 </span>
               </div>
               <div>
-                <div>
-                  <select
-                    value={selectedCity}
-                    onChange={handleCityChange}
-                    className="w-full pl-10 py-3 drop-shadow-xl border-2 rounded-full border-[#54B89C] focus:outline-green-500 text-gray-900"
-                  >
-                    <option value="" disabled>
-                      Select your city
-                    </option>
-                    {cities.map((city) => (
-                      <option
-                        key={city.value}
-                        value={city.value}
-                        className={
-                          city.label === "Chattogram"
-                            ? "text-red-500"
-                            : "text-[#A3B5C9]"
-                        }
-                      >
-                        {city.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <input
+                  {...register("phoneNumber")}
+                  type="tel"
+                  name="phoneNumber"
+                  id="phoneNumber"
+                  required
+                  placeholder="Your Phone Number"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  onBlur={() => validatePhoneNumber(phoneNumber)}
+                  className={`w-full pl-10 py-3 drop-shadow-xl border-2 rounded-full border-[#54B89C] focus:outline-green-500 text-gray-900 ${
+                    phoneNumberError ? "border-red-500" : ""
+                  }`}
+                />
+                {phoneNumberError && (
+                  <p className="text-red-500">{phoneNumberError}</p>
+                )}
               </div>
 
               <div>
+                <label htmlFor="">Profile Picture</label>
                 <input
                   type="file"
                   accept="image/*"
@@ -235,6 +273,69 @@ const Register = () => {
                   className="w-full px-3 py-3 drop-shadow-xl  border-2 file:bg-[#9DDE2A] file:rounded-full file:border-0 file:text-white file:px-2 rounded-full  border-[#54B89C] focus:outline-green-500  text-gray-400"
                 />
               </div>
+
+              <div className="mt-4">
+                <label htmlFor="membership">
+                  Membership{" "}
+                  <Link to="/membership">
+                    <small className="text-[#F5438E]">(See Plan)</small>
+                  </Link>
+                </label>
+                <select
+                  name="membership"
+                  id="membership"
+                  onChange={handleMembershipChange} // Add your membership change handler function
+                  className="w-full pl-10 py-3 drop-shadow-xl border-2 rounded-full border-[#54B89C] focus:outline-green-500 text-gray-900"
+                >
+                  <option value="basic">Basic</option>
+                  <option value="standard">Standard</option>
+                  <option value="premium">Premium</option>
+                </select>
+              </div>
+
+              <div className="mt-2">
+                <p>Payment method</p>
+                <label>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="bKash"
+                    checked={selectedPayment === "bKash"}
+                    onChange={handlePaymentChange}
+                  />
+                  <span className="ps-2">BKash</span>
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="Nagad"
+                    checked={selectedPayment === "Nagad"}
+                    onChange={handlePaymentChange}
+                  />
+                  <span className="ps-2">Nagad</span>
+                </label>
+              </div>
+              <div>
+                <p>Payment your fees for Select membership plan.</p>
+                <p>Bkash/Nagad: +8801636850551</p>
+              </div>
+
+              {selectedPayment === "bKash" || selectedPayment === "Nagad" ? (
+                <div className="w-full pt-5 px-2 mb-1 lg:mb-0">
+                  <input
+                    type="text"
+                    value={transactionId}
+                    onChange={(e) => setTransactionId(e.target.value)}
+                    className="w-full px-3 py-2 drop-shadow-xl border rounded-full  border-[#54B89C] focus:outline-green-500  text-gray-900"
+                    id="transactionId"
+                    placeholder="Transaction ID"
+                    required
+                  />
+                </div>
+              ) : null}
 
               <div>
                 <button

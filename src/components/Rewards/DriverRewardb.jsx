@@ -15,7 +15,7 @@ const DriverRewardb = () => {
   const [trip, setTrip] = useState([]);
   useEffect(() => {
     // Fetch data from the URL
-    fetch(`https://nirapode-server.vercel.app/myTrip?email=${user?.email}`)
+    fetch(`https://e-wallet-server.vercel.app/myTrip?email=${user?.email}`)
       .then((response) => response.json())
       .then((data) => {
         const today = new Date();

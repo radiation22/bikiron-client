@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthProvider";
 
 import bg from "../../assets/signbg.jpg";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/bikironlog.png";
 import icon from "../../assets/leftarrow.png";
 import { toast } from "react-toastify";
 import { FaAngleRight, FaEnvelope, FaLock } from "react-icons/fa";
@@ -19,6 +19,7 @@ import {
   getAuth,
   signInWithPopup,
 } from "firebase/auth";
+import Footer from "../Footer/Footer";
 const UserWelcome = () => {
   const { register, handleSubmit } = useForm();
   const [loginError, setLoginError] = useState("");
@@ -57,16 +58,7 @@ const UserWelcome = () => {
   };
 
   return (
-    <div
-      style={{
-        backgroundImage: `url(${bg})`,
-        backgroundSize: "cover",
-        width: "100%",
-        backgroundRepeat: "no-repeat",
-        height: "500px",
-      }}
-      className=""
-    >
+    <div>
       <Link to="/account">
         <div>
           <img className="h-12 pt-4 pl-4" src={icon} alt="" />
@@ -126,6 +118,8 @@ const UserWelcome = () => {
           </div>
         </div>
       </div>
+
+      <Footer></Footer>
     </div>
   );
 };

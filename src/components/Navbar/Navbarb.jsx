@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { FaBell, FaChartLine, FaSearch, FaUser } from "react-icons/fa";
 import { FaGear, FaHandHoldingDollar, FaGift } from "react-icons/fa6";
 import { AuthContext } from "../context/AuthProvider";
@@ -15,6 +15,7 @@ import search from "../../assets/search.png";
 import bell from "../../assets/bell.png";
 import bus from "../../assets/bus1.png";
 import ticket2 from "../../assets/ticket2.png";
+import { useQuery } from "@tanstack/react-query";
 
 const Navbarb = () => {
   const [notificationCount, setNotificationCount] = useState(0);
@@ -23,16 +24,48 @@ const Navbarb = () => {
 
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const dropdownRef = useRef(null);
+  const [balance, setBalance] = useState(0);
+  const [ticketCost, setTicketCost] = useState(0);
 
-  const handleSignOut = () => {
-    logOut()
-      .then((result) => {
-        toast.success("You have logged out");
-        navigate("/homeb");
-      })
-      .catch((error) => console.log(error));
-  };
+  // Define the query key
+  const queryKey = ["tickets", user?.email];
+
+  // Use the useQuery hook to fetch data
+  const { data: tickets = [], refetch } = useQuery(
+    queryKey,
+    async () => {
+      const url = `https://e-wallet-server.vercel.app/myTicket?email=${user?.email}`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      return data;
+    },
+    {
+      enabled: !!user?.email, // Only fetch data when user.email is available
+    }
+  );
+
+  // Calculate the total cost from the tickets data and update the state
+  useEffect(() => {
+    const totalTicketCost = tickets.reduce(
+      (total, ticket) => total + ticket.totalCost,
+      0
+    );
+
+    // Update the ticketCost state with the calculated total cost
+    setTicketCost(totalTicketCost);
+    refetch();
+  }, [tickets, ticketCost]);
+
+  useEffect(() => {
+    const url = `https://e-wallet-server.vercel.app/myBalance?email=${user?.email}`;
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        const balance = data.map((bal) => setBalance(bal.balance));
+        refetch();
+      });
+  }, [user]);
 
   const handleNotificationClick = () => {
     setNotificationCount(0);
@@ -41,16 +74,6 @@ const Navbarb = () => {
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
-  };
-
-  const closeDropdown = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setShowDropdown(false);
-    }
-  };
-
-  const showTicket = () => {
-    navigate("/myTicketb");
   };
 
   return (
@@ -65,6 +88,14 @@ const Navbarb = () => {
             {/* Add the cog icon */}
             <div className="mr-4">
               <img className="h-6" src={search} alt="" />
+            </div>
+            <div>
+              <input
+                readOnly
+                className="text-black rounded-full ps-3 outline outline-yellow-400 w-[50%]"
+                value={`${balance - ticketCost} tk`}
+                type="text"
+              />
             </div>
           </div>
           <div className="flex-grow relative"></div>

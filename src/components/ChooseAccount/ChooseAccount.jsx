@@ -1,51 +1,40 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import passenger from "../../assets/passenger.png";
-import driver from "../../assets/driver.png";
-import background from "../../assets/background.jpg";
+import { Link, useNavigate } from "react-router-dom";
+import logo from "../../assets/2nd logo.png";
+import Navbar from "../Navbar/Navbar";
 const ChooseAccount = () => {
   const navigate = useNavigate();
-  const handlePassenger = () => {
-    navigate("/location");
-  };
-  const handleDriver = () => {
-    navigate("/dashboard");
-  };
-  return (
-    <div
-      style={{
-        backgroundImage: `url(${background})`,
-        backgroundSize: "cover",
-        width: "100%",
-        backgroundRepeat: "no-repeat",
-      }}
-      className="flex items-center w-full h-screen justify-center"
-    >
-      <div className="space-y-2 px-8 text-center">
-        <h1 className="text-center uppercase text-2xl font-semibold  text-white">
-          YOU ARE joining as
-        </h1>
-        <div className="flex">
-          <div>
-            <img
-              onClick={handlePassenger}
-              className="w-[160px]"
-              src={passenger}
-              alt=""
-            />
-          </div>
 
-          <div>
-            <img
-              onClick={handleDriver}
-              className="w-[160px]"
-              src={driver}
-              alt=""
-            />
+  return (
+    <>
+      <Navbar></Navbar>
+      <div className="bg-[#50AE2A] h-screen">
+        <div className="px-3 py-8">
+          <div className="w-full">
+            <Link to="/allPackage">
+              <div className="bg-[#F7F210] flex justify-center rounded items-center h-[150px]">
+                <div>
+                  <p className="text-black text-2xl font-bold text-center">
+                    গিফট প্যাকেজ
+                  </p>
+                  <p className="text-black text-center">(Gift Package)</p>
+                </div>
+              </div>
+            </Link>
+            <Link to="/fullLibrary">
+              <div className="bg-[#F7F210] mt-5 rounded flex justify-center items-center h-[150px]">
+                <div>
+                  <p className="text-black text-2xl font-bold text-center">
+                    সমগ্র লাইব্রেরি
+                  </p>
+                  <p className="text-black text-center">(Whole Library)</p>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
